@@ -1,0 +1,108 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with role and wallet information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Unique user ID from Firebase Auth" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["BUYER", "SELLER", "ADMIN"], "description": "User primary role" },
+        "walletBalance": { "type": "number", "description": "Current funds in GBP" },
+        "totalSpent": { "type": "number" },
+        "totalEarned": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "role", "walletBalance"]
+    },
+    "Listing": {
+      "title": "Listing",
+      "description": "A backlink opportunity listed by a seller",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "sellerId": { "type": "string" },
+        "websiteName": { "type": "string" },
+        "websiteUrl": { "type": "string" },
+        "dr": { "type": "integer" },
+        "monthlyTraffic": { "type": "integer" },
+        "niche": { "type": "array", "items": { "type": "string" } },
+        "country": { "type": "string" },
+        "price": { "type": "number" },
+        "type": { "type": "string", "enum": ["GUEST_POST", "LINK_INSERTION", "HOMEPAGE_LINK", "NICHE_EDIT"] },
+        "deliveryTime": { "type": "integer", "description": "In days" },
+        "isActive": { "type": "boolean" },
+        "isApproved": { "type": "boolean" },
+        "averageRating": { "type": "number" },
+        "reviewsCount": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["sellerId", "websiteName", "websiteUrl", "dr", "price", "type"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "An order placed by a buyer for a listing",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "buyerId": { "type": "string" },
+        "sellerId": { "type": "string" },
+        "listingId": { "type": "string" },
+        "status": { "type": "string", "enum": ["PENDING", "IN_PROGRESS", "DELIVERED", "COMPLETED", "DISPUTED", "CANCELLED"] },
+        "targetUrl": { "type": "string" },
+        "anchorText": { "type": "string" },
+        "instructions": { "type": "string" },
+        "price": { "type": "number" },
+        "liveUrl": { "type": "string", "description": "The URL of the published backlink" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["buyerId", "sellerId", "listingId", "status", "targetUrl", "anchorText", "price"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "A chat message in a thread",
+      "type": "object",
+      "properties": {
+        "threadId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "content": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["threadId", "senderId", "content", "createdAt"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "Private user profile data"
+    },
+    "listings/{listingId}": {
+      "schema": "Listing",
+      "description": "Public backlink marketplace listings"
+    },
+    "orders/{orderId}": {
+      "schema": "Order",
+      "description": "Orders between buyers and sellers"
+    },
+    "messages/{messageId}": {
+      "schema": "Message",
+      "description": "Global chat messages indexed by threadId"
+    },
+    "inquiries/{inquiryId}": {
+      "schema": {
+        "title": "Inquiry",
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "subject": { "type": "string" },
+          "message": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "description": "Contact form submissions"
+    }
+  }
+}
